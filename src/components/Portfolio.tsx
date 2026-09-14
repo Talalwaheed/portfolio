@@ -13,7 +13,10 @@ import {
   ChevronRight, 
   Activity, 
   Globe, 
-  BarChart3 
+  BarChart3,
+  X,
+  Sparkles,
+  MapPin
 } from "lucide-react";
 import { DataScene } from "./DataScene";
 
@@ -115,6 +118,7 @@ const toolkitCategories = [
 export function Portfolio() {
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [activeSection, setActiveSection] = useState<string>("hero");
+  const [showIntroModal, setShowIntroModal] = useState<boolean>(false);
 
   const filteredProjects = activeCategory === "All" 
     ? projects 
@@ -191,8 +195,19 @@ export function Portfolio() {
       {/* Hero Section */}
       <section id="hero" className="hero-section">
         <div className="hero-content">
-          <div className="hero-status">
-            <i /> Data Scientist & Analyst
+          <div className="hero-profile-badge">
+            <div className="pfp-wrapper">
+              <img 
+                src="/talal-pfp.png" 
+                alt="Muhammad Talal Bin Waheed" 
+                className="hero-pfp"
+              />
+              <span className="pfp-online-indicator" />
+            </div>
+            <div className="hero-profile-meta">
+              <span className="profile-name">Muhammad Talal Bin Waheed</span>
+              <span className="profile-role">Data Science & Machine Learning Specialist</span>
+            </div>
           </div>
 
           <div className="kicker">
@@ -204,15 +219,14 @@ export function Portfolio() {
             <span>through <em>applied machine learning</em> and <em>analytics</em>.</span>
           </h1>
 
-          <p className="hero-intro">
-            I'm a Data Science graduate who works across analytics, machine learning, and applied NLP — cleaning and modeling data with Python, SQL, and Power BI, and building the systems that surface what's actually useful in it.
-          </p>
-
-          <p className="hero-intro" style={{ marginTop: "0.6rem" }}>
-            Through internships and independent projects, I've built churn-prediction models, automated ETL pipelines, retrieval-augmented chatbots, and interactive dashboards — work that's been tested against real customer data, not just benchmarks.
-          </p>
-
           <div className="hero-actions">
+            <button 
+              onClick={() => setShowIntroModal(true)}
+              className="action-btn-secondary"
+            >
+              <Sparkles size={15} />
+              View Intro
+            </button>
             <button 
               onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
               className="action-btn-primary"
@@ -232,6 +246,82 @@ export function Portfolio() {
           Scroll to explore <ChevronRight size={14} className="rotate-90" />
         </button>
       </section>
+
+      {/* Rectangular Landscape Intro Modal Popup */}
+      {showIntroModal && (
+        <div className="intro-modal-backdrop" onClick={() => setShowIntroModal(false)}>
+          <div className="intro-modal-card" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close-btn" onClick={() => setShowIntroModal(false)} aria-label="Close modal">
+              <X size={18} />
+            </button>
+
+            <div className="intro-modal-grid">
+              {/* Left Column: Your Custom Bio Text */}
+              <div className="intro-modal-left">
+                <div className="intro-badge-pill">
+                  <Sparkles size={13} />
+                  <span>About Me</span>
+                </div>
+
+                <h3 className="intro-title">Muhammad Talal Bin Waheed</h3>
+                <span className="intro-subtitle">Data Scientist & Analyst</span>
+
+                <div className="intro-body-paragraphs">
+                  <p>
+                    I’m a Data Science graduate focused on turning messy data into clear, practical insights. I work with Python, SQL, Power BI, and modern data tools to analyze information, uncover patterns, and build solutions that support better decisions.
+                  </p>
+                  <p>
+                    Through internships and projects, I’ve worked on data analytics, predictive modeling, ETL pipelines, telecom customer data, and interactive dashboards. I enjoy solving real-world problems, learning continuously, and creating work that turns data into meaningful results.
+                  </p>
+                </div>
+
+                <div className="intro-highlight-row">
+                  <div className="highlight-item">
+                    <b>87%</b>
+                    <span>Model Accuracy</span>
+                  </div>
+                  <div className="highlight-item">
+                    <b>30%</b>
+                    <span>ETL Workload Cut</span>
+                  </div>
+                  <div className="highlight-item">
+                    <b>End-to-End</b>
+                    <span>Pipelines & BI</span>
+                  </div>
+                </div>
+
+                <div className="intro-modal-actions">
+                  <a href="/Talal__Ai_ML_.pdf" download className="cv-pill-btn">
+                    <Download size={13} />
+                    <span>AI / ML CV</span>
+                  </a>
+                  <a href="/Talal_CV_DA_.pdf" download className="cv-pill-btn">
+                    <Download size={13} />
+                    <span>Analytics CV</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* Right Column: Clear, Prominent Portrait Photo */}
+              <div className="intro-modal-right">
+                <div className="intro-photo-card">
+                  <img 
+                    src="/talal-pfp.png" 
+                    alt="Muhammad Talal Bin Waheed" 
+                    className="intro-photo-img" 
+                  />
+                  <div className="intro-photo-overlay">
+                    <span className="photo-caption-name">Talal Waheed</span>
+                    <span className="photo-caption-meta">
+                      <MapPin size={12} /> Pakistan
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Projects Section */}
       <section id="projects" className="section">
