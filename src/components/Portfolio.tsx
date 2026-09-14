@@ -16,7 +16,8 @@ import {
   BarChart3,
   X,
   Sparkles,
-  MapPin
+  MapPin,
+  ExternalLink
 } from "lucide-react";
 import { DataScene } from "./DataScene";
 
@@ -28,9 +29,9 @@ interface Project {
   metricLabel: string;
   description: string;
   tech: string[];
+  image: string;
   githubUrl?: string;
   liveUrl?: string;
-  image?: string;
 }
 
 const projects: Project[] = [
@@ -42,8 +43,8 @@ const projects: Project[] = [
     metricLabel: "Knowledge Freshness",
     description: "A RAG chatbot built over 100 geopolitical news articles. Uses Microsoft GraphRAG to build a knowledge graph for context-aware retrieval — going beyond flat keyword or vector search — paired with Gemini 2.0 Flash for generation and a 24-hour auto-reindexing pipeline to keep the knowledge base current.",
     tech: ["Microsoft GraphRAG", "Gemini 2.0 Flash", "MongoDB", "Streamlit"],
-    githubUrl: "https://github.com/Talalwaheed/Geopolitical-News-chatbot",
-    liveUrl: "https://geopolitical-news-chatbot-57akafju98twpexdypwkzg.streamlit.app/"
+    image: "/projects/geopolitics-rag.png",
+    githubUrl: "https://github.com/Talalwaheed/Geopolitical-News-chatbot"
   },
   {
     id: "telecom-retention",
@@ -53,6 +54,7 @@ const projects: Project[] = [
     metricLabel: "Model Performance",
     description: "SQL and Python turned raw telecom billing and service records into analysis-ready data; a Power BI dashboard tracks revenue at risk, tenure trends, and flags high-churn-risk customers for the retention team.",
     tech: ["Power BI", "SQL", "Python"],
+    image: "/projects/telecom-retention.png",
     githubUrl: undefined
   },
   {
@@ -63,8 +65,8 @@ const projects: Project[] = [
     metricLabel: "Final Year Capstone",
     description: "A no-code app: upload a CSV or Excel file and it runs automated cleaning, Sentence-Transformer text clustering with t-SNE visualization, and one-click Random Forest training with feature importance — no Python needed on the user's end.",
     tech: ["Streamlit", "Scikit-learn", "Sentence-Transformers"],
-    githubUrl: "https://github.com/Talalwaheed/Data-Assistant-for-MS-Excel",
-    liveUrl: "https://data-assistant-for-ms-excel-4f8u3vr2mya7auewrcx7k7.streamlit.app/"
+    image: "/projects/advance-data-assistant.png",
+    githubUrl: "https://github.com/Talalwaheed/Data-Assistant-for-MS-Excel"
   },
   {
     id: "falcon9-landing",
@@ -74,6 +76,7 @@ const projects: Project[] = [
     metricLabel: "Classification & Regression",
     description: "A set of applied modeling exercises: a SpaceX Falcon 9 landing-outcome classifier at 92.3% accuracy, a coffee-shop profit regression model at R² ≈ 0.99, and a text-based spam/ham email classifier.",
     tech: ["Classification", "Regression", "Feature Engineering"],
+    image: "/projects/falcon9-landing.png",
     githubUrl: "https://github.com/Talalwaheed"
   },
   {
@@ -83,7 +86,8 @@ const projects: Project[] = [
     metric: "Multi-User",
     metricLabel: "Real-Time Boards",
     description: "A drag-and-drop task board for organizing work across boards, lists, and cards — built as a practical exercise in structuring and shipping a real multi-user tool end to end.",
-    tech: ["Drag & drop", "Real-time boards"],
+    tech: ["Drag & drop", "Real-time boards", "React", "WebSockets"],
+    image: "/projects/collaborative-kanban.png",
     githubUrl: "https://github.com/Talalwaheed/Collaborative-Kanban-Board"
   }
 ];
@@ -119,6 +123,7 @@ export function Portfolio() {
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [activeSection, setActiveSection] = useState<string>("hero");
   const [showIntroModal, setShowIntroModal] = useState<boolean>(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   const filteredProjects = activeCategory === "All" 
     ? projects 
@@ -146,7 +151,6 @@ export function Portfolio() {
 
   return (
     <div className="portfolio-shell">
-      {/* Global 3D Canvas Background */}
       <DataScene />
 
       {/* Fixed Header */}
@@ -247,7 +251,7 @@ export function Portfolio() {
         </button>
       </section>
 
-      {/* Rectangular Landscape Intro Modal Popup */}
+      {/* Rectangular Intro Modal */}
       {showIntroModal && (
         <div className="intro-modal-backdrop" onClick={() => setShowIntroModal(false)}>
           <div className="intro-modal-card" onClick={(e) => e.stopPropagation()}>
@@ -256,7 +260,6 @@ export function Portfolio() {
             </button>
 
             <div className="intro-modal-grid">
-              {/* Left Column: Your Custom Bio Text */}
               <div className="intro-modal-left">
                 <div className="intro-badge-pill">
                   <Sparkles size={13} />
@@ -302,7 +305,6 @@ export function Portfolio() {
                 </div>
               </div>
 
-              {/* Right Column: Clear, Prominent Portrait Photo */}
               <div className="intro-modal-right">
                 <div className="intro-photo-card">
                   <img 
@@ -317,6 +319,69 @@ export function Portfolio() {
                     </span>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Project Detail Modal */}
+      {selectedProject && (
+        <div className="intro-modal-backdrop" onClick={() => setSelectedProject(null)}>
+          <div className="project-detail-modal-card" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close-btn" onClick={() => setSelectedProject(null)} aria-label="Close modal">
+              <X size={18} />
+            </button>
+
+            {/* Top Illustration Box */}
+            <div className="project-detail-visual">
+              <img 
+                src={selectedProject.image} 
+                alt={selectedProject.title} 
+                className="project-detail-img" 
+              />
+            </div>
+
+            {/* Description & Specs Beneath */}
+            <div className="project-detail-body">
+              <div className="project-detail-header-row">
+                <div>
+                  <span className="project-detail-category">{selectedProject.category}</span>
+                  <h3 className="project-detail-title">{selectedProject.title}</h3>
+                </div>
+
+                <div className="project-detail-metric-badge">
+                  <b>{selectedProject.metric}</b>
+                  <span>{selectedProject.metricLabel}</span>
+                </div>
+              </div>
+
+              <p className="project-detail-description">
+                {selectedProject.description}
+              </p>
+
+              <div className="project-detail-tech-list">
+                {selectedProject.tech.map((t) => (
+                  <span key={t} className="project-detail-tech-pill">{t}</span>
+                ))}
+              </div>
+
+              <div className="project-detail-links">
+                {selectedProject.githubUrl ? (
+                  <a href={selectedProject.githubUrl} target="_blank" rel="noopener noreferrer" className="action-btn-primary">
+                    <Github size={15} /> View Source Code
+                  </a>
+                ) : (
+                  <span className="repo-placeholder">
+                    <Github size={15} /> Source Code on Request
+                  </span>
+                )}
+
+                {selectedProject.liveUrl && (
+                  <a href={selectedProject.liveUrl} target="_blank" rel="noopener noreferrer" className="action-btn-secondary">
+                    <ExternalLink size={15} /> Launch Live Demo
+                  </a>
+                )}
               </div>
             </div>
           </div>
@@ -351,76 +416,18 @@ export function Portfolio() {
 
         <div className="project-gallery">
           {filteredProjects.map((p) => (
-            <article key={p.id} className="project-card">
+            <article 
+              key={p.id} 
+              className="project-card is-interactive"
+              onClick={() => setSelectedProject(p)}
+            >
               <div className="project-topline">
                 <span>{p.category}</span>
                 <Activity size={16} />
               </div>
 
               <div className="project-visual">
-                {p.image ? (
-                  <img src={p.image} alt={p.title} className="project-screenshot" />
-                ) : (
-                  <div className="project-ui-preview">
-                    <div className="ui-header-bar">
-                      <div className="ui-dots">
-                        <span /><span /><span />
-                      </div>
-                      <span className="ui-address">{p.id}.app/analytics</span>
-                    </div>
-                    <div className="ui-body-mock">
-                      {p.id === "geopolitics-rag" && (
-                        <div className="mock-graph">
-                          <svg viewBox="0 0 200 80" className="viz-graph">
-                            <line x1="20" y1="40" x2="80" y2="20" stroke="currentColor" />
-                            <line x1="80" y1="20" x2="140" y2="60" stroke="currentColor" />
-                            <line x1="80" y1="20" x2="180" y2="30" stroke="currentColor" />
-                            <circle cx="20" cy="40" r="6" fill="var(--primary)" />
-                            <circle cx="80" cy="20" r="9" fill="var(--primary)" />
-                            <circle cx="140" cy="60" r="7" fill="var(--primary)" />
-                            <circle cx="180" cy="30" r="8" fill="var(--primary)" />
-                          </svg>
-                          <span className="mock-caption">Microsoft GraphRAG Entity Map</span>
-                        </div>
-                      )}
-                      {p.id === "telecom-retention" && (
-                        <div className="mock-bars">
-                          <div style={{ height: "45%" }} />
-                          <div style={{ height: "80%" }} />
-                          <div style={{ height: "65%" }} />
-                          <div style={{ height: "87%" }} />
-                          <div style={{ height: "54%" }} />
-                        </div>
-                      )}
-                      {p.id === "advance-data-assistant" && (
-                        <div className="mock-scatter">
-                          {[...Array(14)].map((_, i) => (
-                            <span 
-                              key={i} 
-                              style={{ 
-                                left: `${(i * 19) % 85 + 6}%`, 
-                                top: `${(i * 27) % 70 + 12}%` 
-                              }} 
-                            />
-                          ))}
-                        </div>
-                      )}
-                      {p.id === "falcon9-landing" && (
-                        <div className="mock-orbit-viz">
-                          <div className="orbit-line-mock" />
-                          <div className="orbit-core-mock" />
-                        </div>
-                      )}
-                      {p.id === "collaborative-kanban" && (
-                        <div className="mock-kanban">
-                          <div className="k-col"><div /><div /></div>
-                          <div className="k-col"><div /><div /><div /></div>
-                          <div className="k-col"><div /></div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
+                <img src={p.image} alt={p.title} className="project-screenshot" />
               </div>
 
               <div className="project-copy">
@@ -437,7 +444,7 @@ export function Portfolio() {
                 </div>
               </div>
 
-              <div className="project-links">
+              <div className="project-links" onClick={(e) => e.stopPropagation()}>
                 {p.githubUrl ? (
                   <a href={p.githubUrl} target="_blank" rel="noopener noreferrer">
                     <Github size={15} /> Source Code
